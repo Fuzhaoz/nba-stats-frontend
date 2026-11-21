@@ -18,6 +18,10 @@ export default function GamesPage() {
         teams: TeamRecord[];
     } | null>(null);
     const season = getNBASeason(selectedDate);
+    const hasLiveGames = games.some(function (game) {
+        return game.status === "Live";
+    });
+    console.log("Has live games:", hasLiveGames);
 
     // Load standings once
     useEffect(() => {
@@ -45,7 +49,7 @@ export default function GamesPage() {
         return () => {
             cancelled = true;
         };
-    }, []);
+    }, [season]);
 
     // Load games when selected date changes
     useEffect(() => {
@@ -79,6 +83,60 @@ export default function GamesPage() {
             cancelled = true;
         };
     }, [selectedDate]);
+
+    const hasUnfinishedGames = games.some(function (game) {
+        return game.status !== "Final";
+    });
+
+    // Refresh games based on their status
+    useEffect(() => {
+        if (loading || error) {
+            return;
+        }
+
+        const today = new Date().toLocaleDateString("en-CA", {
+            timeZone: "America/New_York",
+        });
+
+        const isPastDate = selectedDate < today;
+
+        if (isPastDate && !hasUnfinishedGames) {
+            return;
+        }
+
+        const refreshInterval = hasLiveGames ? 60000 : 300000;
+
+        let cancelled = false;
+
+        async function refreshGames() {
+            try {
+                const data = await getGamesByDate(selectedDate);
+
+                if (!cancelled) {
+                    setGames(data);
+                }
+            } catch (error) {
+                console.error("Failed to refresh games:", error);
+            }
+        }
+
+        const intervalId = setInterval(() => {
+            void refreshGames();
+        }, refreshInterval);
+
+        return () => {
+            cancelled = true;
+            clearInterval(intervalId);
+        };
+    }, [
+        selectedDate,
+        hasLiveGames,
+        hasUnfinishedGames,
+        loading,
+        error,
+    ]);
+
+
 
     const standings =
         standingsData?.season === season
