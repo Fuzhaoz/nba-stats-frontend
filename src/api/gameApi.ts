@@ -11,6 +11,8 @@ interface GameDTO {
     visitorTeamAbbreviation: string;
     visitorTeamScore: number | null;
     datetime: string;
+    homeTeamId: number;
+    visitorTeamId: number;
 }
 
 const BASE_URL = "http://localhost:8080/api/games";
@@ -57,6 +59,26 @@ function mapGame(game: GameDTO): Game {
         awayTeam: game.visitorTeamName,
         awayTeamAbbreviation: game.visitorTeamAbbreviation,
         datetime: game.datetime,
-        awayScore: game.visitorTeamScore
+        awayScore: game.visitorTeamScore,
+        homeTeamId: game.homeTeamId,
+        visitorTeamId: game.visitorTeamId
     };
+}
+
+
+export async function getTeamGames(
+    teamId: number,
+    season: number
+): Promise<Game[]> {
+    const response = await fetch(
+        `${BASE_URL}/team/${teamId}?season=${season}`
+    );
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch team games");
+    }
+
+    const data: GameDTO[] = await response.json();
+
+    return data.map(mapGame);
 }

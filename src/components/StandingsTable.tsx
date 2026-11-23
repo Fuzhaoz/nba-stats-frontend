@@ -1,6 +1,7 @@
 
 import type { TeamRecord } from "../api/standingsApi";
 import { getTeamLogo } from "../utils/teamUtils";
+import { Link } from "react-router-dom";
 
 interface StandingsTableProps {
     title: string;
@@ -52,9 +53,12 @@ export default function StandingsTable({
                                     className="h-8 w-8 object-contain"
                                 />
 
-                                <span className="font-medium">
+                                <Link
+                                    to={`/teams/${team.teamId}`}
+                                    className="font-medium hover:text-orange-400"
+                                >
                                     {team.teamName}
-                                </span>
+                                </Link>
                             </div>
                         </td>
                         <td className="py-3 text-right">{team.wins}</td>
