@@ -13,4 +13,6 @@ export interface Game {
     datetime: string;
     homeTeamRecord?: string;
     awayTeamRecord?: string;
+    homeTeamId: number;
+    visitorTeamId: number;
 }
