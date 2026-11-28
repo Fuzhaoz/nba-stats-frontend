@@ -64,6 +64,7 @@ export interface RecentGame {
     gameId: number;
     date: string;
     status: string;
+    datetime: string;
 
     homeTeamId: number;
     homeTeamName: string;

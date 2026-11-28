@@ -9,6 +9,7 @@ import StandingsPage from "./pages/StandingsPage";
 import TeamsPage from "./pages/TeamsPage";
 import PlayersPage from "./pages/PlayersPage";
 import TeamDetailPage from "./pages/TeamDetailPage";
+import GameDetailPage from "./pages/GameDetailPage";
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/games" element={<GamesPage />} />
+                    <Route path="/games/:gameId" element={<GameDetailPage />} />
                     <Route path="/standings" element={<StandingsPage />} />
                     <Route path="/teams" element={<TeamsPage />} />
                     <Route path="/players" element={<PlayersPage />} />

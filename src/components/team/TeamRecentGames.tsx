@@ -1,7 +1,8 @@
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import type { RecentGame } from "../../api/teamApi";
 import { getTeamLogo } from "../../utils/teamUtils";
+import { formatGameDate } from "../../utils/dateUtils";
 
 interface TeamRecentGamesProps {
     teamId: number;
@@ -29,7 +30,7 @@ export default function TeamRecentGames({
             teamScore > opponentScore
         );
     }).length;
-
+    const location = useLocation();
     const recentLosses = recentGames.length - recentWins;
 
     return (
@@ -114,12 +115,15 @@ export default function TeamRecentGames({
                                     <Link
                                         key={game.gameId}
                                         to={`/games/${game.gameId}`}
+                                        state={{
+                                            from: location.pathname + location.search
+                                        }}
                                         className="flex items-center justify-between gap-4 rounded-lg px-3 py-4 transition-colors hover:bg-gray-800/60"
                                     >
                                         {/* Date */}
-                                        <span className="w-20 shrink-0 text-xs text-gray-400">
-                      {game.date}
-                    </span>
+                                        <span className="w-24 shrink-0 text-xs text-gray-400">
+                                             {formatGameDate(game.datetime)}
+                                        </span>
 
                                         {/* Opponent */}
                                         <div className="flex flex-1 items-center gap-3">

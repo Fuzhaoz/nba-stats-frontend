@@ -1,6 +1,5 @@
 
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import TeamRoster from "../components/team/TeamRoster";
 import { getTeamRecord, getTeamStats } from "../api/teamApi";
 import type { TeamSeasonStats } from "../api/teamApi";
@@ -12,6 +11,13 @@ import { getRecentGames } from "../api/teamApi";
 import type { RecentGame } from "../api/teamApi";
 import TeamStatistics from "../components/team/TeamStatistics";
 import TeamRecentGames from "../components/team/TeamRecentGames";
+import {
+    useParams,
+    useSearchParams,
+    useLocation
+} from "react-router-dom";
+
+import BackButton from "../components/BackButton";
 
 export default function TeamDetailPage() {
     const { teamId } = useParams<{ teamId: string }>();
@@ -23,7 +29,26 @@ export default function TeamDetailPage() {
     const [recentGames, setRecentGames] = useState<RecentGame[]>([]);
     const season = getNBASeason(getTodayDate());
     type TeamTab = "overview" | "roster" | "games";
-    const [activeTab, setActiveTab] = useState<TeamTab>("overview");
+
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const tab = searchParams.get("tab");
+    const location = useLocation();
+
+    const activeTab: TeamTab =
+        tab === "roster" || tab === "games"
+            ? tab
+            : "overview";
+
+    function setActiveTab(tab: TeamTab) {
+        setSearchParams(
+            { tab },
+            {
+                replace: true,
+                state: location.state
+            }
+        );
+    }
 
     useEffect(() => {
         let cancelled = false;
@@ -107,6 +132,8 @@ export default function TeamDetailPage() {
 
     return (
         <div className="space-y-8 text-white">
+            <BackButton fallback="/standings" />
+
 
 
             {/* Team Header */}

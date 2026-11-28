@@ -7,12 +7,19 @@ import WeekCalendar from "../components/WeekCalendar";
 import type { Game } from "../types/game";
 import type { TeamRecord } from "../api/standingsApi";
 import { getTodayDate, getNBASeason } from "../utils/dateUtils";
+import { useSearchParams } from "react-router-dom";
 
 export default function GamesPage() {
     const [games, setGames] = useState<Game[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedDate, setSelectedDate] = useState(getTodayDate);
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const selectedDate = searchParams.get("date") || getTodayDate();
+
+    function setSelectedDate(date: string) {
+        setSearchParams({ date }, { replace: true });
+    }
     const [standingsData, setStandingsData] = useState<{
         season: number;
         teams: TeamRecord[];
@@ -94,9 +101,7 @@ export default function GamesPage() {
             return;
         }
 
-        const today = new Date().toLocaleDateString("en-CA", {
-            timeZone: "America/New_York",
-        });
+        const today = getTodayDate();
 
         const isPastDate = selectedDate < today;
 

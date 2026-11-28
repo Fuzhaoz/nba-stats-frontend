@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { getTeamGames } from "../../api/gameApi";
 import type { Game } from "../../types/game";
+import { formatGameDate } from "../../utils/dateUtils";
+import { Link, useLocation } from "react-router-dom";
 
 interface TeamGamesProps {
     teamId: number;
@@ -9,6 +11,7 @@ interface TeamGamesProps {
 }
 
 export default function TeamGames({ teamId, season }: TeamGamesProps) {
+    const location = useLocation();
     const [games, setGames] = useState<Game[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -92,9 +95,13 @@ export default function TeamGames({ teamId, season }: TeamGamesProps) {
 
 
                     return (
-                        <div
+                        <Link
                             key={game.id}
-                            className="rounded-xl border border-gray-800 bg-gray-900 p-4"
+                            to={`/games/${game.id}`}
+                            state={{
+                                from: location.pathname + location.search
+                            }}
+                            className="block rounded-xl border border-gray-800 bg-gray-900 p-4 transition-colors hover:border-orange-500 hover:bg-gray-800"
                         >
                             <div className="flex items-center justify-between gap-4">
                                 <div className="flex items-center gap-4">
@@ -112,7 +119,7 @@ export default function TeamGames({ teamId, season }: TeamGamesProps) {
 
                                     <div>
                                         <p className="text-sm text-gray-400">
-                                            {game.date}
+                                            {formatGameDate(game.datetime)}
                                         </p>
 
                                         <p className="font-semibold text-white">
@@ -133,7 +140,7 @@ export default function TeamGames({ teamId, season }: TeamGamesProps) {
                                     )}
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     );
 
                 })}
