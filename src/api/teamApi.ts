@@ -127,3 +127,25 @@ export async function getTeamRoster(
 
     return response.json();
 }
+
+export interface Team {
+    teamId: number;
+    name: string;
+    fullName: string;
+    abbreviation: string;
+    city: string;
+    conference: "East" | "West";
+    division: string;
+}
+
+export async function getAllTeams(): Promise<Team[]> {
+    const response = await fetch(
+        "http://localhost:8080/api/teams"
+    );
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch teams");
+    }
+
+    return response.json();
+}

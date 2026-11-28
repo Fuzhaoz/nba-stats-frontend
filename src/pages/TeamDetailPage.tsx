@@ -132,7 +132,7 @@ export default function TeamDetailPage() {
 
     return (
         <div className="space-y-8 text-white">
-            <BackButton fallback="/standings" />
+            <BackButton fallback="/teams" />
 
 
 
