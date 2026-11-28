@@ -1,7 +1,7 @@
 
 import type { TeamRecord } from "../api/standingsApi";
 import { getTeamLogo } from "../utils/teamUtils";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 interface StandingsTableProps {
     title: string;
@@ -12,6 +12,8 @@ export default function StandingsTable({
                                            title,
                                            teams
                                        }: StandingsTableProps) {
+    const location = useLocation();
+
     return (
         <section>
             <div className="mb-5">
@@ -55,6 +57,9 @@ export default function StandingsTable({
 
                                 <Link
                                     to={`/teams/${team.teamId}`}
+                                    state={{
+                                        from: location.pathname + location.search
+                                    }}
                                     className="font-medium hover:text-orange-400"
                                 >
                                     {team.teamName}

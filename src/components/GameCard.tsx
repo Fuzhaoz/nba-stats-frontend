@@ -2,6 +2,7 @@
 import type { Game } from "../types/game";
 import { formatGameTime } from "../utils/dateUtils";
 import { getTeamLogo } from "../utils/teamUtils";
+import { Link, useLocation } from "react-router-dom";
 
 
 interface GameCardProps {
@@ -9,8 +10,15 @@ interface GameCardProps {
 }
 
 export default function GameCard({ game }: GameCardProps) {
+    const location = useLocation();
     return (
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
+        <Link
+            to={`/games/${game.id}`}
+            state={{
+                from: location.pathname + location.search
+            }}
+            className="block rounded-xl border border-slate-800 bg-slate-900 p-6 transition-colors hover:border-orange-500 hover:bg-slate-800"
+        >
 
             {/* Game status */}
             <div className="mb-5 flex justify-end">
@@ -69,6 +77,6 @@ export default function GameCard({ game }: GameCardProps) {
                 </div>
 
             </div>
-        </div>
+        </Link>
     );
 }

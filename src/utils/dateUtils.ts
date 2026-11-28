@@ -1,34 +1,27 @@
 export function getTodayDate(): string {
     const now = new Date();
 
-    const parts = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/New_York",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        hourCycle: "h23"
-    }).formatToParts(now);
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
 
-    const getPart = (type: string) =>
-        parts.find(part => part.type === type)!.value;
-
-    const year = getPart("year");
-    const month = getPart("month");
-    const day = getPart("day");
-    const hour = Number(getPart("hour"));
-
-    const today = `${year}-${month}-${day}`;
-
-    // NBA game day switches at 6 AM New York time.
-    if (hour < 6) {
-        const date = new Date(`${today}T12:00:00Z`);
-        date.setUTCDate(date.getUTCDate() - 1);
-        return date.toISOString().slice(0, 10);
-    }
-
-    return today;
+    return `${year}-${month}-${day}`;
 }
+export function getLocalDateRange(dateString: string): {
+    from: string;
+    to: string;
+} {
+    const [year, month, day] = dateString.split("-").map(Number);
+
+    const start = new Date(year, month - 1, day);
+    const end = new Date(year, month - 1, day + 1);
+
+    return {
+        from: start.toISOString(),
+        to: end.toISOString()
+    };
+}
+
 
 export function formatGameTime(datetime: string): string {
     return new Date(datetime).toLocaleTimeString("en-US", {
@@ -42,4 +35,12 @@ export function getNBASeason(dateString: string): number {
     const [year, month] = dateString.split("-").map(Number);
 
     return month >= 10 ? year : year - 1;
+}
+
+export function formatGameDate(datetime: string): string {
+    return new Date(datetime).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+    });
 }
